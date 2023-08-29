@@ -1,6 +1,5 @@
 {
-  "homepage": "http://Sp1ffman.github.io/Intern-Workout",
-
+  "homepage": "http://Sp1ffman.github.io/Intern-workout",
   "name": "react-intern",
   "version": "0.1.0",
   "private": true,
@@ -22,7 +21,6 @@
     "start": "react-scripts start",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
