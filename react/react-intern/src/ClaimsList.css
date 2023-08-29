@@ -1,0 +1,23 @@
+.claims-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+.claims-table th,
+.claims-table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.claims-table th {
+  background-color: #f2f2f2;
+}
+
+.claims-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.claims-table tr:hover {
+  background-color: #ddd;
+}

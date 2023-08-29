@@ -1,0 +1,153 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 100px;
+}
+.background {
+  background: linear-gradient(#063176, #008be1);
+  background-size: cover;
+}
+
+.password-icon {
+  position: absolute;
+  top: 20px;
+  right: 5px;
+  cursor: pointer;
+}
+
+.input-group {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.password-input {
+  position: relative;
+}
+
+.password-input input {
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.password-input button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.btn-group {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+}
+
+.btn-group button {
+  margin: 5px 0;
+  padding: 5px 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.terms-text {
+  font-size: 12px;
+  margin-top: 10px;
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.signup-link {
+  font-size: 14px;
+  color: white;
+}
+
+.signup-link a {
+  color: #09bfec;
+  text-decoration: none;
+}
+.message-container {
+  text-align: center;
+  margin-top: 20px;
+  color: white;
+}
+.submit-button {
+  width: 100%;
+  display: block;
+  height: 35px;
+  text-align: center;
+  margin-top: 25px;
+  background-color: #068fff;
+  color: white;
+  border: none;
+}
+.signin-google {
+  width: 100%;
+  display: block;
+  height: 35px;
+  text-align: center;
+  /* margin-top: 2px; */
+  background-color: #37bec8;
+  color: white;
+  border: none;
+}
+
+.divider {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex-grow: 1;
+  background: #ddd;
+  height: 1px;
+}
+.link {
+  text-decoration: none;
+}
+
+.login-form {
+  width: 250px;
+}
+
+.forgot-password {
+  margin-top: 5px;
+
+  font-size: 12px;
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  z-index: 1000;
+
+  color: #0c04f8;
+  text-decoration: none;
+}
+.password-toggle-icon {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  z-index: 1000;
+  cursor: pointer;
+  color: lightgray;
+}
