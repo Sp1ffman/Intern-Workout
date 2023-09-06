@@ -50,7 +50,7 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
       if (response.ok) {
         const data = await response.json();
-        setClaims((prevClaims) => [...prevClaims, ...data.claims]);
+        setClaims(data.claims);
 
         if (data.claims.length === 0) {
           setAllDataLoaded(true);
