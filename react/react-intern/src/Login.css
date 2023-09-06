@@ -119,9 +119,9 @@
 .divider::before,
 .divider::after {
   content: "";
-  flex-grow: 1;
+  flex-grow: 0.3;
   background: #ddd;
-  height: 1px;
+  height: 1.2px;
 }
 .link {
   text-decoration: none;

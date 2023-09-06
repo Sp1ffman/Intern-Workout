@@ -6,11 +6,12 @@ import ClaimsList from "./ClaimsList";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <Router>
+    <Router basename="/intern">
       <Routes>
         <Route
-          path="/"
+          path="/login"
           element={<Login setIsAuthenticated={setIsAuthenticated} />}
         ></Route>
         <Route
