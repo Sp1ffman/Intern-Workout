@@ -189,13 +189,27 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     },
   ];
 
-  const filteredClaims = claims.filter((claim) =>
-    Object.values(claim).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchText.toLowerCase())
-    )
-  );
+  const filteredClaims = claims.filter((claim) => {
+    const searchTextLowerCase = searchText.toLowerCase();
+    return Object.keys(claim).some((key) => {
+      const value = claim[key];
+      if (typeof value === "string") {
+        if (key === "Filed_Date" || key === "Service_date") {
+          const formattedDate = formatDate(value).toLowerCase();
+          return formattedDate.includes(searchTextLowerCase);
+        } else if (key === "Fees") {
+          const feeValue = parseFloat(value);
+          if (!isNaN(feeValue)) {
+            return feeValue.toString().includes(searchTextLowerCase);
+          }
+        } else {
+          return value.toLowerCase().includes(searchTextLowerCase);
+        }
+      }
+      return false;
+    });
+  });
+
   const rowClassName = (row, index) => {
     return index % 2 === 0 ? "even-row" : "odd-row";
   };
