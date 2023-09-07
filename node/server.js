@@ -167,26 +167,6 @@ app.get("/api/getclaims", verifyToken, (req, res) => {
     res.json({ claims: results });
   });
 });
-// app.get("/api/getclaims", verifyToken, (req, res) => {
-//   // Pagination support
-//   const page = req.query.page || 1;
-//   const pageSize = 10; // Number of records per page
-
-//   const startIndex = (page - 1) * pageSize;
-
-//   connection.query(
-//     "SELECT * FROM claims LIMIT ?, ?",
-//     [startIndex, pageSize],
-//     (err, results) => {
-//       if (err) {
-//         console.error("Error fetching claims:", err);
-//         return res.status(500).json({ error: "Internal server error" });
-//       }
-
-//       res.json({ claims: results });
-//     }
-//   );
-// });
 
 const tokens = [];
 
