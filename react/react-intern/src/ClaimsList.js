@@ -92,6 +92,7 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       width: 125,
       sorter: (a, b) => a.Filed_Date.localeCompare(b.Filed_Date),
       sortDirections: ["ascend", "descend"],
+
       render: (text) => (
         <span>
           <FontAwesomeIcon
@@ -108,9 +109,9 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       dataIndex: "patient",
       key: "patient",
       width: 225,
-      sorter: (a, b) => (a.patient || "").localeCompare(b.patient || ""),
+      sorter: (a, b) => a.patient.localeCompare(b.patient),
       sortDirections: ["ascend", "descend"],
-      render: (text, record) => (
+      render: (text) => (
         <span>
           <CustomSVG size={16} />
           <a href="#" className="a-style">
@@ -152,7 +153,7 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       dataIndex: "reimbursement1",
       key: "reimbursement1",
       width: 350,
-      sorter: (a, b) => (a.reimbursement1 || 0) - (b.reimbursement1 || 0),
+      sorter: (a, b) => a.reimbursement1.localeCompare(b.reimbursement1),
       sortDirections: ["ascend", "descend"],
       render: (text) =>
         text === "Verify Benefits" ? (
@@ -168,7 +169,7 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       dataIndex: "reimbursement2",
       key: "reimbursement2",
       width: 350,
-      sorter: (a, b) => (a.reimbursement2 || 0) - (b.reimbursement2 || 0),
+      sorter: (a, b) => a.reimbursement2.localeCompare(b.reimbursement2),
       sortDirections: ["ascend", "descend"],
       render: (text) =>
         text === "Verify Benefits" ? (
@@ -184,7 +185,7 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       dataIndex: "payer_name",
       key: "payer_name",
       width: 150,
-      sorter: (a, b) => (a.payer_name || "").localeCompare(b.payer_name || ""),
+      sorter: (a, b) => a.payer_name.localeCompare(b.payer_name),
       sortDirections: ["ascend", "descend"],
     },
   ];
@@ -197,14 +198,11 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
         if (key === "Filed_Date" || key === "Service_date") {
           const formattedDate = formatDate(value).toLowerCase();
           return formattedDate.includes(searchTextLowerCase);
-        } else if (key === "Fees") {
-          const feeValue = parseFloat(value);
-          if (!isNaN(feeValue)) {
-            return feeValue.toString().includes(searchTextLowerCase);
-          }
         } else {
           return value.toLowerCase().includes(searchTextLowerCase);
         }
+      } else if (typeof value === "number" && key === "Fees") {
+        return value.toString().includes(searchTextLowerCase);
       }
       return false;
     });
