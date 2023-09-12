@@ -22,12 +22,24 @@ function formatCurrency(value) {
   return `$ ${value.toFixed(2)}`;
 }
 
-function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
+export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   const [claims, setClaims] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [allDataLoaded, setAllDataLoaded] = useState(false);
   const navigate = useNavigate();
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+
+  const paginationProps = {
+    ...pagination,
+    total: claims.length,
+    // showSizeChanger: true,
+    // showQuickJumper: true,
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -92,7 +104,6 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       width: 125,
       sorter: (a, b) => a.Filed_Date.localeCompare(b.Filed_Date),
       sortDirections: ["ascend", "descend"],
-
       render: (text) => (
         <span>
           <FontAwesomeIcon
@@ -212,6 +223,10 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     return index % 2 === 0 ? "even-row" : "odd-row";
   };
 
+  const handleTableChange = (newPage) => {
+    setPagination(newPage);
+  };
+
   return (
     <div>
       <div className="w3-container">
@@ -225,14 +240,15 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
           dataSource={filteredClaims}
           className="claims-table"
           columns={columns}
-          pagination={false}
+          pagination={paginationProps}
+          onChange={handleTableChange}
+          rowClassName={rowClassName}
+          scroll={{ y: 400 }}
           locale={{
             triggerDesc: "",
             triggerAsc: "",
             cancelSort: "",
           }}
-          rowClassName={rowClassName}
-          scroll={{ y: 400 }}
         />
 
         {loading && <div>Loading...</div>}
@@ -241,5 +257,3 @@ function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     </div>
   );
 }
-
-export default ClaimsList;
