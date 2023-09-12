@@ -29,13 +29,13 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   const [allDataLoaded, setAllDataLoaded] = useState(false);
   const navigate = useNavigate();
 
-  const [paginationState, setPaginationState] = useState({
+  const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
   });
 
   const paginationProps = {
-    ...paginationState,
+    ...pagination,
     total: claims.length,
     // showSizeChanger: true,
     // showQuickJumper: true,
@@ -224,7 +224,7 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   };
 
   const handleTableChange = (newPage) => {
-    setPaginationState(newPage);
+    setPagination(newPage);
   };
 
   return (
