@@ -1,18 +1,12 @@
-const express = require("express");
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const cors = require("cors");
+
 const dotenv = require("dotenv");
-const morgan = require("morgan");
+
 const { body, validationResult } = require("express-validator");
 dotenv.config({ path: "./../config.env" });
-const app = express();
-app.use(express.json());
-app.use(cors());
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+const app = require("./app");
 
 const connection = mysql.createConnection({
   host: "localhost",
