@@ -5,4 +5,4 @@
 - Connecting the fronted to the middleware
 - Middleware accesses the data from database
 
-Technologies used : `React` `Node` `Mysql`
+Technologies used : `React` `Node` `Mysql` `CSS` `HTML`
