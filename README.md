@@ -4,3 +4,5 @@
 - Creating a middleware and a database
 - Connecting the fronted to the middleware
 - Middleware accesses the data from database
+
+Technologies used : `React` `Node` `Mysql`
