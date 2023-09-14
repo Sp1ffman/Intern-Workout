@@ -37,7 +37,8 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   const paginationProps = {
     ...pagination,
     total: claims.length,
-    // showSizeChanger: true,
+    position: ["bottomCenter"],
+    showSizeChanger: true,
     // showQuickJumper: true,
   };
 
@@ -229,13 +230,17 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
   return (
     <div>
-      <div className="w3-container">
-        <Search
-          placeholder="Search"
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: 200, marginBottom: 16 }}
-        />
-
+      <Search
+        placeholder="Search"
+        allowClear
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{ width: 300, marginBottom: 16 }}
+        enterButton="Search"
+        maxLength={50}
+        // loading
+        showCount
+      />
+      <div>
         <Table
           dataSource={filteredClaims}
           className="claims-table"

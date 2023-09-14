@@ -167,6 +167,36 @@ app.get("/api/getclaims", verifyToken, (req, res) => {
     res.json({ claims: results });
   });
 });
+// const claimsPerPage = 10;
+// app.get("/api/getclaims", verifyToken, (req, res) => {
+//   const page = req.query.page || 1;
+//   const startIndex = (page - 1) * claimsPerPage;
+//   connection.query(
+//     "SELECT * FROM claims LIMIT ?,?",
+//     [startIndex, claimsPerPage],
+//     (err, results) => {
+//       if (err) {
+//         console.error("Error fetching claims:", err);
+//         return res.status(500).json({ error: "Internal server error" });
+//       }
+//       connection.query(
+//         "SELECT COUNT(*) as totalClaimsCount FROM claims",
+//         (err, countRes) => {
+//           if (err) {
+//             console.error("Error fetching claims:", err);
+//             return res.status(500).json({ error: "Internal server error" });
+//           }
+//           const totalClaims = countRes[0].totalClaimsCount;
+//           const response = {
+//             claims: results,
+//             totalPages: Math.ceil(totalClaims / claimsPerPage),
+//           };
+//           res.json(response);
+//         }
+//       );
+//     }
+//   );
+// });
 
 const tokens = [];
 
