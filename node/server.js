@@ -1,13 +1,10 @@
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const dotenv = require("dotenv");
-
 const { body, validationResult } = require("express-validator");
 dotenv.config({ path: "./../config.env" });
 const app = require("./app");
-
 const connection = mysql.createConnection({
   host: "localhost",
   user: process.env.DATABASE_USERNAME,
