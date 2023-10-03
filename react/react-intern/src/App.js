@@ -3,6 +3,8 @@ import "./PasswordToggle";
 import Login from "./Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ClaimsList from "./ClaimsList";
+import UpdateForm from "./UpdateForm";
+import NewClaimForm from "./NewClaimForm";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,6 +25,8 @@ function App() {
             />
           }
         ></Route>
+        <Route path="/updateform/:id" element={<UpdateForm />}></Route>
+        <Route path="/newclaim" element={<NewClaimForm />}></Route>
       </Routes>
     </Router>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Input } from "antd";
+import { Table, Input, Button, Popconfirm, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import CustomSVG from "./CustomSvg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -39,7 +40,6 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     total: claims.length,
     position: ["bottomCenter"],
     showSizeChanger: true,
-    // showQuickJumper: true,
   };
 
   useEffect(() => {
@@ -123,13 +123,28 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       width: 225,
       sorter: (a, b) => a.patient.localeCompare(b.patient),
       sortDirections: ["ascend", "descend"],
-      render: (text) => (
+      render: (text, record) => (
         <span>
           <CustomSVG size={16} />
           <a href="#" className="a-style">
             {" "}
             {text}
           </a>
+          <p>
+            <Button type="link" onClick={() => handleUpdatePatient(record)}>
+              Update
+            </Button>
+            <Popconfirm
+              title="Are you sure you want to delete this patient?"
+              onConfirm={() => handleDeletePatient(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="link" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </p>
         </span>
       ),
     },
@@ -202,6 +217,36 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     },
   ];
 
+  const handleUpdatePatient = (record) => {
+    navigate(`/updateform/${record.Id}`);
+  };
+  const handleNewClaim = () => {
+    navigate("/newclaim");
+  };
+
+  const handleDeletePatient = async (record) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/deletepatient/${record.Id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        message.success("Patient deleted successfully");
+        fetchClaimsData();
+      } else {
+        console.error("Error deleting patient:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting patient:", error.message);
+    }
+  };
+
   const filteredClaims = claims.filter((claim) => {
     const searchTextLowerCase = searchText.toLowerCase();
     return Object.keys(claim).some((key) => {
@@ -237,9 +282,12 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
         style={{ width: 300, marginBottom: 16 }}
         enterButton="Search"
         maxLength={50}
-        // loading
         showCount
       />
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleNewClaim}>
+        New
+      </Button>
+
       <div>
         <Table
           dataSource={filteredClaims}

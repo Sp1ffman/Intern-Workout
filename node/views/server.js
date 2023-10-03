@@ -23,10 +23,10 @@ connection.connect((err) => {
 app.post(
   "/api/signup",
   [
-    body("name", "The name length must be atleast 3").isLength({ min: 3 }),
+    body("name", "The name length must be at least 3").isLength({ min: 3 }),
     body("email", "Enter a valid email").isEmail(),
     body("password", "Password Cannot be blank").exists(),
-    body("password", "Password must atleast be 5 characters")
+    body("password", "Password must at least be 5 characters")
       .isLength({
         min: 5,
       })
@@ -64,7 +64,7 @@ app.post(
         ],
         (err, data) => {
           if (err) {
-            console.error("There is a problem in registering the user:", err);
+            console.error("Unable to register the user:", err);
             return res.status(403).json({
               error: "User with that credentials already exists",
               message: err.message,
@@ -93,7 +93,7 @@ app.post(
   [
     body("email", "Enter a valid email").exists().isEmail(),
     body("password", "Password Cannot be blank").exists(),
-    body("password", "Password must atleast be 5 characters").isLength({
+    body("password", "Password must at least be 5 characters").isLength({
       min: 5,
     }),
   ],
@@ -135,6 +135,7 @@ app.post(
     );
   }
 );
+
 async function verifyToken(req, res, next) {
   try {
     let token = req.headers["authorization"].split(" ");
@@ -158,36 +159,63 @@ app.get("/api/getclaims", verifyToken, (req, res) => {
     res.json({ claims: results });
   });
 });
-// const claimsPerPage = 10;
-// app.get("/api/getclaims", verifyToken, (req, res) => {
-//   const page = req.query.page || 1;
-//   const startIndex = (page - 1) * claimsPerPage;
-//   connection.query(
-//     "SELECT * FROM claims LIMIT ?,?",
-//     [startIndex, claimsPerPage],
-//     (err, results) => {
-//       if (err) {
-//         console.error("Error fetching claims:", err);
-//         return res.status(500).json({ error: "Internal server error" });
-//       }
-//       connection.query(
-//         "SELECT COUNT(*) as totalClaimsCount FROM claims",
-//         (err, countRes) => {
-//           if (err) {
-//             console.error("Error fetching claims:", err);
-//             return res.status(500).json({ error: "Internal server error" });
-//           }
-//           const totalClaims = countRes[0].totalClaimsCount;
-//           const response = {
-//             claims: results,
-//             totalPages: Math.ceil(totalClaims / claimsPerPage),
-//           };
-//           res.json(response);
-//         }
-//       );
-//     }
-//   );
-// });
+
+app.get("/api/getclaims/:id", verifyToken, (req, res) => {
+  const claimId = req.params.id;
+
+  connection.query(
+    "SELECT * FROM claims WHERE id = ?",
+    [claimId],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching claim by ID:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Claim not found" });
+      }
+
+      const claim = results[0];
+      res.json({ claim });
+    }
+  );
+});
+
+app.patch("/api/updateclaim/:id", verifyToken, (req, res) => {
+  const claimId = req.params.id;
+  const updatedClaimData = req.body;
+
+  connection.query(
+    "UPDATE claims SET ? WHERE id = ?",
+    [updatedClaimData, claimId],
+    (err, results) => {
+      if (err) {
+        console.error("Error updating claim:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      res.json({ message: "Claim updated successfully" });
+    }
+  );
+});
+
+app.delete("/api/deleteclaim/:id", verifyToken, (req, res) => {
+  const claimId = req.params.id;
+
+  connection.query(
+    "DELETE FROM claims WHERE id = ?",
+    [claimId],
+    (err, results) => {
+      if (err) {
+        console.error("Error deleting claim:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      res.json({ message: "Claim deleted successfully" });
+    }
+  );
+});
 
 const tokens = [];
 
@@ -203,6 +231,108 @@ app.delete("/api/logout", verifyToken, (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+app.patch("/api/updatepatient/:id", verifyToken, (req, res) => {
+  const patientId = req.params.id;
+  const updatedPatientData = req.body;
+
+  connection.query(
+    "UPDATE claims SET ? WHERE id = ?",
+    [updatedPatientData, patientId],
+    (err, results) => {
+      if (err) {
+        console.error("Error updating patient:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      res.json({ message: "Patient updated successfully" });
+    }
+  );
+});
+
+app.delete("/api/deletepatient/:id", verifyToken, (req, res) => {
+  const patientId = req.params.id;
+
+  connection.query(
+    "DELETE FROM claims WHERE id = ?",
+    [patientId],
+    (err, results) => {
+      if (err) {
+        console.error("Error deleting patient:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      res.json({ message: "Patient deleted successfully" });
+    }
+  );
+});
+
+app.post(
+  "/api/addclaim",
+  verifyToken,
+  [
+    body("patient", "Patient name cannot be blank").exists(),
+    body("Filed_Date", "Filed date cannot be blank").exists(),
+    body("Service_Date", "Service date cannot be blank").exists(),
+    body("Fees", "Fees cannot be blank").exists(),
+  ],
+  (req, res) => {
+    const {
+      Id,
+      user_id,
+      patient,
+      Filed_Date,
+      Service_Date,
+      Fees,
+      reimbursement1,
+      reimbursement2,
+      payer_name,
+    } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const newClaim = {
+      Id,
+      user_id,
+      patient,
+      Filed_Date,
+      Service_Date,
+      Fees,
+      reimbursement1,
+      reimbursement2,
+      payer_name,
+    };
+
+    connection.query(
+      "INSERT INTO claims (Id,user_id,patient, Filed_Date, Service_Date, Fees,reimbursement1,reimbursement2,payer_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        newClaim.Id,
+        newClaim.user_id,
+        newClaim.patient,
+        newClaim.Filed_Date,
+        newClaim.Service_Date,
+        newClaim.Fees,
+        newClaim.reimbursement1,
+        newClaim.reimbursement2,
+        newClaim.payer_name,
+      ],
+      (err, results) => {
+        if (err) {
+          console.error("Unable to add new claim:", err);
+          return res.status(500).json({
+            error: "Error adding new claim",
+            message: err.message,
+          });
+        }
+
+        res.status(201).json({ message: "New claim added successfully" });
+      }
+    );
+  }
+);
 
 const PORT = process.env.PORT || 3000;
 app.listen(8000, () => {
