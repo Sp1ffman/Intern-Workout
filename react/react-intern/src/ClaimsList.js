@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Input } from "antd";
+import { Table, Input, Button, Popconfirm, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import CustomSVG from "./CustomSvg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -37,8 +38,8 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   const paginationProps = {
     ...pagination,
     total: claims.length,
-    // showSizeChanger: true,
-    // showQuickJumper: true,
+    position: ["bottomCenter"],
+    showSizeChanger: true,
   };
 
   useEffect(() => {
@@ -54,11 +55,14 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8000/api/getclaims", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/claims/getclaims",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -79,7 +83,7 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
   if (!isAuthenticated) {
     if (localStorage.getItem("token")) localStorage.removeItem("token");
-    fetch("http://localhost:8000/api/logout", {
+    fetch("http://localhost:8000/api/user/logout", {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -122,13 +126,28 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
       width: 225,
       sorter: (a, b) => a.patient.localeCompare(b.patient),
       sortDirections: ["ascend", "descend"],
-      render: (text) => (
+      render: (text, record) => (
         <span>
           <CustomSVG size={16} />
           <a href="#" className="a-style">
             {" "}
             {text}
           </a>
+          <p>
+            <Button type="link" onClick={() => handleUpdatePatient(record)}>
+              Update
+            </Button>
+            <Popconfirm
+              title="Are you sure you want to delete this patient?"
+              onConfirm={() => handleDeletePatient(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="link" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </p>
         </span>
       ),
     },
@@ -201,6 +220,36 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
     },
   ];
 
+  const handleUpdatePatient = (record) => {
+    navigate(`/updateform/${record.Id}`);
+  };
+  const handleNewClaim = () => {
+    navigate("/newclaim");
+  };
+
+  const handleDeletePatient = async (record) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/claims/deletepatient/${record.Id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        message.success("Patient deleted successfully");
+        fetchClaimsData();
+      } else {
+        console.error("Error deleting patient:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting patient:", error.message);
+    }
+  };
+
   const filteredClaims = claims.filter((claim) => {
     const searchTextLowerCase = searchText.toLowerCase();
     return Object.keys(claim).some((key) => {
@@ -229,13 +278,20 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
   return (
     <div>
-      <div className="w3-container">
-        <Search
-          placeholder="Search"
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: 200, marginBottom: 16 }}
-        />
+      <Search
+        placeholder="Search"
+        allowClear
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{ width: 300, marginBottom: 16 }}
+        enterButton="Search"
+        maxLength={50}
+        showCount
+      />
+      <Button type="primary" icon={<PlusOutlined />} onClick={handleNewClaim}>
+        New
+      </Button>
 
+      <div>
         <Table
           dataSource={filteredClaims}
           className="claims-table"

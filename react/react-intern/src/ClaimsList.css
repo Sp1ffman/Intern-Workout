@@ -1,10 +1,7 @@
-.claims-table {
+/* .claims-table {
   width: 100%;
   border-collapse: collapse;
-  height: 100;
-  overflow: hidden;
-  border-radius: 10px;
-}
+} */
 
 .ant-table-body::-webkit-scrollbar {
   width: 6px;
