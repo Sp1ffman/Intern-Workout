@@ -8,14 +8,17 @@ const NewClaimForm = () => {
 
   const onFinish = async (values) => {
     try {
-      const response = await fetch("http://localhost:8000/api/addclaim", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/claims/addclaim",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(values),
+        }
+      );
 
       if (response.ok) {
         message.success("Claim created successfully");
@@ -113,7 +116,7 @@ const NewClaimForm = () => {
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit">
-            Update
+            Create
           </Button>
 
           <Button type="default" htmlType="button" onClick={handleCancel}>

@@ -55,11 +55,14 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:8000/api/getclaims", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/claims/getclaims",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -80,7 +83,7 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
 
   if (!isAuthenticated) {
     if (localStorage.getItem("token")) localStorage.removeItem("token");
-    fetch("http://localhost:8000/api/logout", {
+    fetch("http://localhost:8000/api/user/logout", {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -227,7 +230,7 @@ export default function ClaimsList({ setIsAuthenticated, isAuthenticated }) {
   const handleDeletePatient = async (record) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/deletepatient/${record.Id}`,
+        `http://localhost:8000/api/claims/deletepatient/${record.Id}`,
         {
           method: "DELETE",
           headers: {

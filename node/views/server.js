@@ -21,7 +21,7 @@ connection.connect((err) => {
 });
 
 app.post(
-  "/api/signup",
+  "/api/user/signup",
   [
     body("name", "The name length must be at least 3").isLength({ min: 3 }),
     body("email", "Enter a valid email").isEmail(),
@@ -89,7 +89,7 @@ app.post(
 );
 
 app.post(
-  "/api/login",
+  "/api/user/login",
   [
     body("email", "Enter a valid email").exists().isEmail(),
     body("password", "Password Cannot be blank").exists(),
@@ -149,7 +149,7 @@ async function verifyToken(req, res, next) {
   }
 }
 
-app.get("/api/getclaims", verifyToken, (req, res) => {
+app.get("/api/claims/getclaims", verifyToken, (req, res) => {
   connection.query("SELECT * FROM claims", (err, results) => {
     if (err) {
       console.error("Error fetching claims:", err);
@@ -160,7 +160,7 @@ app.get("/api/getclaims", verifyToken, (req, res) => {
   });
 });
 
-app.get("/api/getclaims/:id", verifyToken, (req, res) => {
+app.get("/api/claims/getclaims/:id", verifyToken, (req, res) => {
   const claimId = req.params.id;
 
   connection.query(
@@ -182,7 +182,7 @@ app.get("/api/getclaims/:id", verifyToken, (req, res) => {
   );
 });
 
-app.patch("/api/updateclaim/:id", verifyToken, (req, res) => {
+app.patch("/api/claims/updateclaim/:id", verifyToken, (req, res) => {
   const claimId = req.params.id;
   const updatedClaimData = req.body;
 
@@ -200,7 +200,7 @@ app.patch("/api/updateclaim/:id", verifyToken, (req, res) => {
   );
 });
 
-app.delete("/api/deleteclaim/:id", verifyToken, (req, res) => {
+app.delete("/api/claims/deleteclaim/:id", verifyToken, (req, res) => {
   const claimId = req.params.id;
 
   connection.query(
@@ -219,7 +219,7 @@ app.delete("/api/deleteclaim/:id", verifyToken, (req, res) => {
 
 const tokens = [];
 
-app.delete("/api/logout", verifyToken, (req, res) => {
+app.delete("/api/user/logout", verifyToken, (req, res) => {
   try {
     const token = req.headers["authorization"].split(" ")[1];
     tokens.splice(tokens.indexOf(token), 1);
@@ -232,7 +232,7 @@ app.delete("/api/logout", verifyToken, (req, res) => {
   }
 });
 
-app.patch("/api/updatepatient/:id", verifyToken, (req, res) => {
+app.patch("/api/claims/updatepatient/:id", verifyToken, (req, res) => {
   const patientId = req.params.id;
   const updatedPatientData = req.body;
 
@@ -242,7 +242,6 @@ app.patch("/api/updatepatient/:id", verifyToken, (req, res) => {
     (err, results) => {
       if (err) {
         console.error("Error updating patient:", err);
-        return res.status(500).json({ error: "Internal server error" });
       }
 
       res.json({ message: "Patient updated successfully" });
@@ -250,7 +249,7 @@ app.patch("/api/updatepatient/:id", verifyToken, (req, res) => {
   );
 });
 
-app.delete("/api/deletepatient/:id", verifyToken, (req, res) => {
+app.delete("/api/claims/deletepatient/:id", verifyToken, (req, res) => {
   const patientId = req.params.id;
 
   connection.query(
@@ -268,13 +267,18 @@ app.delete("/api/deletepatient/:id", verifyToken, (req, res) => {
 });
 
 app.post(
-  "/api/addclaim",
+  "/api/claims/addclaim",
   verifyToken,
   [
+    body("Id", "Patient ID cannot be blank").exists(),
+    body("user_id", "User ID cannot be blank").exists(),
     body("patient", "Patient name cannot be blank").exists(),
     body("Filed_Date", "Filed date cannot be blank").exists(),
     body("Service_Date", "Service date cannot be blank").exists(),
     body("Fees", "Fees cannot be blank").exists(),
+    body("reimbursement1", "Reimbursement details cannot be blank").exists(),
+    body("reimbursement2", "Reimbursement details cannot be blank").exists(),
+    body("payer_name", "Payer name cannot be blank").exists(),
   ],
   (req, res) => {
     const {

@@ -12,7 +12,7 @@ const UpdateForm = () => {
   const onFinish = async (values) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/updatepatient/${id}`,
+        `http://localhost:8000/api/claims/updatepatient/${id}`,
         {
           method: "PATCH",
           headers: {
