@@ -20,7 +20,7 @@ connection.connect((err) => {
 
 async function createClaim(newClaim, res) {
   try {
-    const data = await connection.query(
+    await connection.query(
       "INSERT INTO claims (Id,user_id,patient, Filed_Date, Service_Date, Fees,reimbursement1,reimbursement2,payer_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         newClaim.Id,
@@ -35,10 +35,10 @@ async function createClaim(newClaim, res) {
       ]
     );
 
-    return res.json({ message: "New claim added successfully" });
+    res.status(201).json({ message: "New claim added successfully" });
   } catch (error) {
     console.error("Unable to add new claim:", error);
-    return res.status(500).json({
+    res.status(500).json({
       error: "Error adding new claim",
       message: error.message,
     });
@@ -53,39 +53,37 @@ async function getClaimById(claimId, res) {
     );
 
     if (results.length > 0) {
-      return res.json({ claim: results[0] });
+      res.json({ claim: results[0] });
     } else {
-      return res.status(404).json({ error: "Claim not found" });
+      res.status(404).json({ error: "Claim not found" });
     }
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 async function updateClaim(claimId, updatedClaimData, res) {
   try {
-    const results = await connection.query("UPDATE claims SET ? WHERE id = ?", [
+    await connection.query("UPDATE claims SET ? WHERE id = ?", [
       updatedClaimData,
       claimId,
     ]);
 
-    return res.json({ message: "Claim updated successfully" });
+    res.json({ message: "Claim updated successfully" });
   } catch (error) {
     console.error("Error updating claim:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 async function deleteClaim(claimId, res) {
   try {
-    const results = await connection.query("DELETE FROM claims WHERE id = ?", [
-      claimId,
-    ]);
+    await connection.query("DELETE FROM claims WHERE id = ?", [claimId]);
 
-    return res.json({ message: "Claim deleted successfully" });
+    res.json({ message: "Claim deleted successfully" });
   } catch (error) {
     console.error("Error deleting claim:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -93,10 +91,10 @@ async function getClaims(res) {
   try {
     const results = await connection.query("SELECT * FROM claims");
 
-    return res.json({ claims: results });
+    res.json({ claims: results });
   } catch (error) {
     console.error("Error fetching claims:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
