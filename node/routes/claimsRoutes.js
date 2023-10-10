@@ -1,23 +1,26 @@
 const express = require("express");
 const { body } = require("express-validator");
-const {
-  getClaims,
-  getClaimByIdHandler,
-  addNewClaim,
-  updateClaimHandler,
-  deleteClaimHandler,
-} = require("../controllers/ClaimsController");
-const verifyToken = require("../middlewares/AuthMiddleware");
+const claimsController = require("../controllers/ClaimsController");
+
+const authMiddleware = require("../middlewares/AuthMiddleware");
 
 const claimsRoutes = express.Router();
 
-claimsRoutes.get("/getclaims", verifyToken, getClaims);
+claimsRoutes.get(
+  "/getclaims",
+  authMiddleware.verifyToken,
+  claimsController.getClaims
+);
 
-claimsRoutes.get("/getclaims/:id", verifyToken, getClaimByIdHandler);
+claimsRoutes.get(
+  "/getclaims/:id",
+  authMiddleware.verifyToken,
+  claimsController.getClaimByIdHandler
+);
 
 claimsRoutes.post(
   "/addclaim",
-  verifyToken,
+  authMiddleware.verifyToken,
   [
     body("Id", "Patient ID cannot be blank").exists(),
     body("user_id", "User ID cannot be blank").exists(),
@@ -29,10 +32,18 @@ claimsRoutes.post(
     body("reimbursement2", "Reimbursement details cannot be blank").exists(),
     body("payer_name", "Payer name cannot be blank").exists(),
   ],
-  addNewClaim
+  claimsController.addNewClaim
 );
 
-claimsRoutes.patch("/updateclaim/:id", verifyToken, updateClaimHandler);
-claimsRoutes.delete("/deleteclaim/:id", verifyToken, deleteClaimHandler);
+claimsRoutes.patch(
+  "/updateclaim/:id",
+  authMiddleware.verifyToken,
+  claimsController.updateClaimHandler
+);
+claimsRoutes.delete(
+  "/deleteclaim/:id",
+  authMiddleware.verifyToken,
+  claimsController.deleteClaimHandler
+);
 
 module.exports = claimsRoutes;

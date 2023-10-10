@@ -5,22 +5,11 @@ dotenv.config({ path: "./../views/config/config.env" });
 
 async function verifyToken(req, res, next) {
   try {
-    const token =
-      req.headers.authorization && req.headers.authorization.split(" ")[1];
-
-    if (!token) {
-      return res
-        .status(401)
-        .json({ error: "Unauthorized - Token not provided" });
-    }
-
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-
+    let token = req.headers["authorization"].split(" ");
+    const decoded = await jwt.verify(token[1], process.env.JWT_SECRET);
     req.userId = decoded.userId;
-
     console.log(req.userId);
     console.log("Token verification successful");
-
     next();
   } catch (err) {
     return res.status(401).json({ error: "Invalid User" });
